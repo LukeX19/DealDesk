@@ -52,8 +52,8 @@ namespace DealDesk.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{productId}/discount")]
-        public IActionResult GetDiscount(long productId, DiscountRequest discountRequest)
+        [HttpPost("{productId}/discount")]
+        public IActionResult ApplyDiscount(long productId, DiscountRequest discountRequest)
         {
             IDiscountStrategy discountStrategy = discountRequest.DiscountType switch
             {
