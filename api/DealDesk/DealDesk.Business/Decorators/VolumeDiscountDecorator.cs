@@ -10,7 +10,9 @@ namespace DealDesk.Business.Decorators
         public override decimal ApplyDiscount(decimal price)
         {
             var discountedPrice = base.ApplyDiscount(price);
-            return discountedPrice * 0.9M; // Applies a 10% volume discount
+
+            // Example: 10% off for volume discount (VolumeDiscount Strategy)
+            return discountedPrice * 0.9M;
         }
     }
 }

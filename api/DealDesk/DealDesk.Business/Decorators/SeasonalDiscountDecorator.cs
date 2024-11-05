@@ -10,7 +10,9 @@ namespace DealDesk.Business.Decorators
         public override decimal ApplyDiscount(decimal price)
         {
             var discountedPrice = base.ApplyDiscount(price);
-            return discountedPrice * 0.85M; // Applies a 15% seasonal discount
+
+            // Example: 15% off for seasonal discount (SeasonalDiscount Strategy)
+            return discountedPrice * 0.85M;
         }
     }
 }
