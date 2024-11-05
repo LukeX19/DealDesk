@@ -52,19 +52,15 @@ namespace DealDesk.Api.Controllers
             return NoContent();
         }
 
-        [HttpPost("{productId}/discount")]
-        public IActionResult ApplyDiscount(long productId, DiscountRequest discountRequest)
+        [HttpGet("{productId}/discount")]
+        public IActionResult GetDiscountedPrice(long productId, [FromQuery] long customerId)
         {
-            IDiscountStrategy discountStrategy = discountRequest.DiscountType switch
-            {
-                "Volume" => new VolumeDiscount(),
-                "Seasonal" => new SeasonalDiscount(),
-                _ => new NoDiscount()
-            };
+            // Calculate the discounted price using the ProductService
+            var discountedPrice = _productService.GetDiscountedPrice(productId, customerId);
 
-            var discountedPrice = _productService.GetDiscountedPrice(productId, discountStrategy);
-
-            return Ok(new { ProductId = productId, DiscountedPrice = discountedPrice });
+            // Return the discounted price
+            return Ok(new { ProductId = productId, CustomerId = customerId, DiscountedPrice = discountedPrice });
         }
+
     }
 }
