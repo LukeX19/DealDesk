@@ -9,6 +9,6 @@ namespace DealDesk.Business.Interfaces
         ProductResponse GetById(long productId);
         void Update(long productId, ProductRequest updatedProductDto);
         void Delete(long productId);
-        decimal GetDiscountedPrice(long productId, long customerId);
+        decimal GetDiscountedPrice(long productId, long customerId, int quantity);
     }
 }

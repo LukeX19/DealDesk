@@ -14,21 +14,27 @@ interface DiscountDialogProps {
 const DiscountDialog: React.FC<DiscountDialogProps> = ({ open, onClose, products, customers }) => {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
+  const [quantity, setQuantity] = useState<number>(0);
   const [discountedPrice, setDiscountedPrice] = useState<number | null>(null);
 
   useEffect(() => {
     if (open) {
       setSelectedProductId(null);
       setSelectedCustomerId(null);
+      setQuantity(0);
       setDiscountedPrice(null);
     }
   }, [open]);
 
   const handleCalculateDiscount = async () => {
-    if (selectedProductId && selectedCustomerId) {
+    if (selectedProductId && selectedCustomerId && quantity > 0) {
       try {
-        const response = await ProductService.getDiscountedPrice(selectedProductId, selectedCustomerId);
-        setDiscountedPrice(response.discountedPrice);
+        const response = await ProductService.getDiscountedPrice(
+          selectedProductId,
+          quantity,
+          selectedCustomerId
+        );
+        setDiscountedPrice(response.discountedTotalPrice);
       } catch (error) {
         console.error("Failed to load discounted price:", error);
       }
@@ -53,6 +59,16 @@ const DiscountDialog: React.FC<DiscountDialogProps> = ({ open, onClose, products
             </MenuItem>
           ))}
         </TextField>
+
+        <TextField
+          label="Product Quantity"
+          type="number"
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value))}
+          fullWidth
+          margin="dense"
+          inputProps={{ min: 1 }}
+        />
 
         <TextField
           select
@@ -88,7 +104,7 @@ const DiscountDialog: React.FC<DiscountDialogProps> = ({ open, onClose, products
           onClick={handleCalculateDiscount}
           variant="contained"
           color="primary"
-          disabled={!selectedProductId || !selectedCustomerId}
+          disabled={!selectedProductId || !selectedCustomerId || quantity <= 0}
         >
           Calculate
         </Button>

@@ -51,10 +51,15 @@ namespace DealDesk.Business.Services
             _productRepository.Delete(productId);
         }
 
-        public decimal GetDiscountedPrice(long productId, long customerId)
+        public decimal GetDiscountedPrice(long productId, long customerId, int quantity)
         {
             var product = _productRepository.GetById(productId);
             var customer = _customerRepository.GetById(customerId);
+
+            if (quantity <= 0)
+            {
+                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
+            }
 
             // We start with the No Discount strategy first
             IDiscountStrategy discountStrategy = new NoDiscount();
@@ -70,8 +75,11 @@ namespace DealDesk.Business.Services
                 };
             }
 
+            // Calculate total price before discount
+            var totalPrice = product.StandardPrice * quantity;
+
             // Calculate the final discounted price
-            return discountStrategy.ApplyDiscount(product.StandardPrice);
+            return discountStrategy.ApplyDiscount(totalPrice);
         }
     }
 }
