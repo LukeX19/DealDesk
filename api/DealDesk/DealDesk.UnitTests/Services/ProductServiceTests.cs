@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DealDesk.Business.Dtos;
+using DealDesk.Business.Exceptions;
 using DealDesk.Business.Services;
 using DealDesk.DataAccess.Entities;
 using DealDesk.DataAccess.Interfaces;
@@ -185,14 +186,14 @@ namespace DealDesk.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task GetDiscountedPrice_InvalidQuantity_ThrowsArgumentException()
+        public async Task GetDiscountedPrice_InvalidQuantity_ThrowsInvalidQuantityException()
         {
             // Arrange
             var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
             var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string>() };
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<ArgumentException>(async () =>
+            await Assert.ThrowsExceptionAsync<InvalidQuantityException>(async () =>
             {
                 await _productService.GetDiscountedPrice(1, 0, 1);
             });

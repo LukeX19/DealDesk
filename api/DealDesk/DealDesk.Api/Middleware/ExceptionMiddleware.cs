@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text.Json;
 using DealDesk.Api.Models;
+using DealDesk.Business.Exceptions;
 
 namespace DealDesk.Api.Middleware
 {
@@ -23,6 +24,10 @@ namespace DealDesk.Api.Middleware
             catch (EntityNotFoundException ex)
             {
                 await HandleCustomExceptionAsync(context, ex, HttpStatusCode.NotFound);
+            }
+            catch (InvalidQuantityException ex)
+            {
+                await HandleCustomExceptionAsync(context, ex, HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {

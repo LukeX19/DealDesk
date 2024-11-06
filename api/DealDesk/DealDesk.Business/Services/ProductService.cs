@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DealDesk.Business.Decorators;
 using DealDesk.Business.Dtos;
+using DealDesk.Business.Exceptions;
 using DealDesk.Business.Interfaces;
 using DealDesk.Business.Strategies;
 using DealDesk.DataAccess.Entities;
@@ -55,7 +56,7 @@ namespace DealDesk.Business.Services
         {
             if (quantity <= 0)
             {
-                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
+                throw new InvalidQuantityException();
             }
 
             var product = await _productRepository.GetById(productId, ct);
