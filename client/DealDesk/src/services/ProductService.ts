@@ -26,9 +26,9 @@ export const deleteProduct = async (productId: number) => {
   return response.data;
 };
 
-export const getDiscountedPrice = async (productId: number, customerId: number) => {
-  const response = await api.get(`/api/products/${productId}/discount`, {
-    params: { customerId },
+export const getDiscountedPrice = async (productId: number, quantity: number, customerId: number) => {
+  const response = await api.get(`/api/products/discount`, {
+    params: { productId, quantity, customerId },
   });
   return response.data;
 };

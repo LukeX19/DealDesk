@@ -51,15 +51,21 @@ namespace DealDesk.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{productId}/discount")]
-        public IActionResult GetDiscountedPrice(long productId, [FromQuery] long customerId)
+        [HttpGet("discount")]
+        public IActionResult GetDiscountedPrice([FromQuery] ProductDiscountRequest request)
         {
             // Calculate the discounted price using the ProductService
-            var discountedPrice = _productService.GetDiscountedPrice(productId, customerId);
+            var discountedTotalPrice = _productService.GetDiscountedPrice(request.ProductId, request.CustomerId, request.Quantity);
 
             // Return the discounted price
-            return Ok(new { ProductId = productId, CustomerId = customerId, DiscountedPrice = discountedPrice });
+            var response = new ProductDiscountResponse
+            {
+                ProductId = request.ProductId,
+                CustomerId = request.CustomerId,
+                Quantity = request.Quantity,
+                DiscountedTotalPrice = discountedTotalPrice
+            };
+            return Ok(response);
         }
-
     }
 }
