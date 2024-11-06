@@ -3,7 +3,8 @@ using DealDesk.DataAccess.Interfaces;
 
 namespace DealDesk.DataAccess.Repositories
 {
-    public class ProductRepository : BaseRepositoryInMemory<Product>, IProductRepository
+    public class ProductRepository : BaseRepositorySQLite<Product>, IProductRepository
     {
+        public ProductRepository(AppDbContext context) : base(context) { }
     }
 }
