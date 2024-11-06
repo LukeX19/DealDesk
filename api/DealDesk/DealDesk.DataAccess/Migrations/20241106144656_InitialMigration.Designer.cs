@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DealDesk.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241106140015_InitialMigration")]
+    [Migration("20241106144656_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
