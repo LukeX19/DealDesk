@@ -17,34 +17,34 @@ namespace DealDesk.Business.Services
             _mapper = mapper;
         }
 
-        public long Create(CustomerRequest customerDto)
+        public async Task<long> Create(CustomerRequest customerDto, CancellationToken ct = default)
         {
-            Customer customer = _mapper.Map<Customer>(customerDto);
-            var customerId = _customerRepository.Create(customer);
+            var customer = _mapper.Map<Customer>(customerDto);
+            var customerId = await _customerRepository.Create(customer, ct);
             return customerId;
         }
 
-        public ICollection<CustomerResponse> GetAll()
+        public async Task<ICollection<CustomerResponse>> GetAll(CancellationToken ct = default)
         {
-            ICollection<Customer> customers = _customerRepository.GetAll();
+            var customers = await _customerRepository.GetAll(ct);
             return _mapper.Map<ICollection<CustomerResponse>>(customers);
         }
 
-        public CustomerResponse GetById(long customerId)
+        public async Task<CustomerResponse> GetById(long customerId, CancellationToken ct = default)
         {
-            Customer customer = _customerRepository.GetById(customerId);
+            var customer = await _customerRepository.GetById(customerId, ct);
             return _mapper.Map<CustomerResponse>(customer);
         }
 
-        public void Update(long customerId, CustomerRequest updatedCustomerDto)
+        public async Task Update(long customerId, CustomerRequest updatedCustomerDto, CancellationToken ct = default)
         {
-            Customer customer = _mapper.Map<Customer>(updatedCustomerDto);
-            _customerRepository.Update(customerId, customer);
+            var customer = _mapper.Map<Customer>(updatedCustomerDto);
+            await _customerRepository.Update(customerId, customer, ct);
         }
 
-        public void Delete(long customerId)
+        public async Task Delete(long customerId, CancellationToken ct = default)
         {
-            _customerRepository.Delete(customerId);
+            await _customerRepository.Delete(customerId, ct);
         }
     }
 }

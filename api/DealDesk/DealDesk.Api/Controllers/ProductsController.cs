@@ -10,52 +10,52 @@ namespace DealDesk.Api.Controllers
     {
         private readonly IProductService _productService;
 
-        public ProductsController(IProductService productsService)
+        public ProductsController(IProductService productService)
         {
-            _productService = productsService;
+            _productService = productService;
         }
 
         [HttpPost]
-        public IActionResult Create(ProductRequest productDto)
+        public async Task<IActionResult> Create(ProductRequest productDto, CancellationToken ct = default)
         {
-            var createdProductId = _productService.Create(productDto);
-            var createdProduct = _productService.GetById(createdProductId);
+            var createdProductId = await _productService.Create(productDto, ct);
+            var createdProduct = await _productService.GetById(createdProductId, ct);
             return CreatedAtAction(nameof(GetById), new { productId = createdProductId }, createdProduct);
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken ct = default)
         {
-            var products = _productService.GetAll();
+            var products = await _productService.GetAll(ct);
             return Ok(products);
         }
 
         [HttpGet("{productId}")]
-        public IActionResult GetById(long productId)
+        public async Task<IActionResult> GetById(long productId, CancellationToken ct = default)
         {
-            var product = _productService.GetById(productId);
+            var product = await _productService.GetById(productId, ct);
             return Ok(product);
         }
 
         [HttpPut("{productId}")]
-        public IActionResult Update(long productId, ProductRequest updatedProductDto)
+        public async Task<IActionResult> Update(long productId, ProductRequest updatedProductDto, CancellationToken ct = default)
         {
-            _productService.Update(productId, updatedProductDto);
+            await _productService.Update(productId, updatedProductDto, ct);
             return NoContent();
         }
 
         [HttpDelete("{productId}")]
-        public IActionResult Delete(long productId)
+        public async Task<IActionResult> Delete(long productId, CancellationToken ct = default)
         {
-            _productService.Delete(productId);
+            await _productService.Delete(productId, ct);
             return NoContent();
         }
 
         [HttpGet("discount")]
-        public IActionResult GetDiscountedPrice([FromQuery] ProductDiscountRequest request)
+        public async Task<IActionResult> GetDiscountedPrice([FromQuery] ProductDiscountRequest request, CancellationToken ct = default)
         {
             // Calculate the discounted price using the ProductService
-            var discountedTotalPrice = _productService.GetDiscountedPrice(request.ProductId, request.CustomerId, request.Quantity);
+            var discountedTotalPrice = await _productService.GetDiscountedPrice(request.ProductId, request.Quantity, request.CustomerId, ct);
 
             // Return the discounted price
             var response = new ProductDiscountResponse

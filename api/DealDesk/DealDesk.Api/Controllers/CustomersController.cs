@@ -16,38 +16,38 @@ namespace DealDesk.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CustomerRequest customerDto)
+        public async Task<IActionResult> Create(CustomerRequest customerDto, CancellationToken ct = default)
         {
-            var createdCustomerId = _customerService.Create(customerDto);
-            var createdCustomer = _customerService.GetById(createdCustomerId);
+            var createdCustomerId = await _customerService.Create(customerDto, ct);
+            var createdCustomer = await _customerService.GetById(createdCustomerId, ct);
             return CreatedAtAction(nameof(GetById), new { customerId = createdCustomerId }, createdCustomer);
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken ct = default)
         {
-            var customers = _customerService.GetAll();
+            var customers = await _customerService.GetAll(ct);
             return Ok(customers);
         }
 
         [HttpGet("{customerId}")]
-        public IActionResult GetById(long customerId)
+        public async Task<IActionResult> GetById(long customerId, CancellationToken ct = default)
         {
-            var customer = _customerService.GetById(customerId);
+            var customer = await _customerService.GetById(customerId, ct);
             return Ok(customer);
         }
 
         [HttpPut("{customerId}")]
-        public IActionResult Update(long customerId, CustomerRequest updatedCustomerDto)
+        public async Task<IActionResult> Update(long customerId, CustomerRequest updatedCustomerDto, CancellationToken ct = default)
         {
-            _customerService.Update(customerId, updatedCustomerDto);
+            await _customerService.Update(customerId, updatedCustomerDto, ct);
             return NoContent();
         }
 
         [HttpDelete("{customerId}")]
-        public IActionResult Delete(long customerId)
+        public async Task<IActionResult> Delete(long customerId, CancellationToken ct = default)
         {
-            _customerService.Delete(customerId);
+            await _customerService.Delete(customerId, ct);
             return NoContent();
         }
     }

@@ -9,24 +9,29 @@ namespace DealDesk.DataAccess.Repositories
         private static ICollection<T> _entities = new List<T>();
         private static long _nextId = 1;
 
-        public long Create(T entity)
+        public async Task<long> Create(T entity, CancellationToken ct = default)
         {
             entity.Id = _nextId++;
             _entities.Add(entity);
-            return entity.Id;
+            return await Task.FromResult(entity.Id);
         }
 
-        public ICollection<T> GetAll()
+        public async Task<ICollection<T>> GetAll(CancellationToken ct = default)
         {
-            return _entities;
+            return await Task.FromResult(_entities.ToList());
         }
 
-        public T GetById(long id)
+        public async Task<T> GetById(long id, CancellationToken ct = default)
         {
-            return _entities.FirstOrDefault(x => x.Id == id) ?? throw new EntityNotFoundException(typeof(T).Name, id);
+            var entity = _entities.FirstOrDefault(x => x.Id == id);
+            if (entity == null)
+            {
+                throw new EntityNotFoundException(typeof(T).Name, id);
+            }
+            return await Task.FromResult(entity);
         }
 
-        public void Update(long id, T updatedEntity)
+        public async Task Update(long id, T updatedEntity, CancellationToken ct = default)
         {
             var existingEntity = _entities.FirstOrDefault(x => x.Id == id);
             if (existingEntity == null)
@@ -36,9 +41,10 @@ namespace DealDesk.DataAccess.Repositories
             updatedEntity.Id = id;
             _entities.Remove(existingEntity);
             _entities.Add(updatedEntity);
+            await Task.CompletedTask;
         }
 
-        public void Delete(long id)
+        public async Task Delete(long id, CancellationToken ct = default)
         {
             var entity = _entities.FirstOrDefault(x => x.Id == id);
             if (entity == null)
@@ -46,6 +52,7 @@ namespace DealDesk.DataAccess.Repositories
                 throw new EntityNotFoundException(typeof(T).Name, id);
             }
             _entities.Remove(entity);
+            await Task.CompletedTask;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DealDesk.Business.Decorators;
 using DealDesk.Business.Dtos;
+using DealDesk.Business.Exceptions;
 using DealDesk.Business.Interfaces;
 using DealDesk.Business.Strategies;
 using DealDesk.DataAccess.Entities;
@@ -21,45 +22,45 @@ namespace DealDesk.Business.Services
             _mapper = mapper;
         }
 
-        public long Create(ProductRequest productDto)
+        public async Task<long> Create(ProductRequest productDto, CancellationToken ct = default)
         {
-            Product product = _mapper.Map<Product>(productDto);
-            var productId = _productRepository.Create(product);
+            var product = _mapper.Map<Product>(productDto);
+            var productId = await _productRepository.Create(product, ct);
             return productId;
         }
 
-        public ICollection<ProductResponse> GetAll()
+        public async Task<ICollection<ProductResponse>> GetAll(CancellationToken ct = default)
         {
-            ICollection<Product> products = _productRepository.GetAll();
+            var products = await _productRepository.GetAll(ct);
             return _mapper.Map<ICollection<ProductResponse>>(products);
         }
 
-        public ProductResponse GetById(long productId)
+        public async Task<ProductResponse> GetById(long productId, CancellationToken ct = default)
         {
-            Product product = _productRepository.GetById(productId);
+            var product = await _productRepository.GetById(productId, ct);
             return _mapper.Map<ProductResponse>(product);
         }
 
-        public void Update(long productId, ProductRequest updatedProductDto)
+        public async Task Update(long productId, ProductRequest updatedProductDto, CancellationToken ct = default)
         {
-            Product product = _mapper.Map<Product>(updatedProductDto);
-            _productRepository.Update(productId, product);
+            var product = _mapper.Map<Product>(updatedProductDto);
+            await _productRepository.Update(productId, product, ct);
         }
 
-        public void Delete(long productId)
+        public async Task Delete(long productId, CancellationToken ct = default)
         {
-            _productRepository.Delete(productId);
+            await _productRepository.Delete(productId, ct);
         }
 
-        public decimal GetDiscountedPrice(long productId, long customerId, int quantity)
+        public async Task<decimal> GetDiscountedPrice(long productId, int quantity, long customerId, CancellationToken ct = default)
         {
-            var product = _productRepository.GetById(productId);
-            var customer = _customerRepository.GetById(customerId);
-
             if (quantity <= 0)
             {
-                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
+                throw new InvalidQuantityException();
             }
+
+            var product = await _productRepository.GetById(productId, ct);
+            var customer = await _customerRepository.GetById(customerId, ct);
 
             // We start with the No Discount strategy first
             IDiscountStrategy discountStrategy = new NoDiscount();

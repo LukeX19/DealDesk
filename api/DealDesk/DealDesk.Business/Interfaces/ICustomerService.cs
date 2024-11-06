@@ -4,10 +4,10 @@ namespace DealDesk.Business.Interfaces
 {
     public interface ICustomerService
     {
-        long Create(CustomerRequest customerDto);
-        ICollection<CustomerResponse> GetAll();
-        CustomerResponse GetById(long customerId);
-        void Update(long customerId, CustomerRequest updatedCustomerDto);
-        void Delete(long customerId);
+        Task<long> Create(CustomerRequest customerDto, CancellationToken ct = default);
+        Task<ICollection<CustomerResponse>> GetAll(CancellationToken ct = default);
+        Task<CustomerResponse> GetById(long customerId, CancellationToken ct = default);
+        Task Update(long customerId, CustomerRequest updatedCustomerDto, CancellationToken ct = default);
+        Task Delete(long customerId, CancellationToken ct = default);
     }
 }
