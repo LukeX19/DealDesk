@@ -64,10 +64,8 @@ cd api/DealDesk/DealDesk.Api
 dotnet run
 ```
 - The API should be running at https://localhost:7268 (or another port if configured).
-- If you encounter any issues related to dependencies, you can manually restore packages by running the following command before executing `dotnet run`:
-```bash
-dotnet restore
-```
+- If you encounter any issues related to dependencies, you can manually restore packages by running `dotnet restore` before executing `dotnet run`.
+- Running `dotnet run` will automatically build the project. If you prefer to build separately, you can use `dotnet build` before `dotnet run`.
 
 *Note: The application is configured to automatically apply migrations at startup, so no manual database setup is required.*
 
