@@ -19,8 +19,7 @@ namespace DealDesk.Api.Controllers
         public async Task<IActionResult> Create(ProductRequest productDto, CancellationToken ct = default)
         {
             var createdProductId = await _productService.Create(productDto, ct);
-            var createdProduct = await _productService.GetById(createdProductId, ct);
-            return CreatedAtAction(nameof(GetById), new { productId = createdProductId }, createdProduct);
+            return Created($"/api/products/{createdProductId}", createdProductId);
         }
 
         [HttpGet]
@@ -55,16 +54,9 @@ namespace DealDesk.Api.Controllers
         public async Task<IActionResult> GetDiscountedPrice([FromQuery] ProductDiscountRequest request, CancellationToken ct = default)
         {
             // Calculate the discounted price using the ProductService
-            var discountedTotalPrice = await _productService.GetDiscountedPrice(request.ProductId, request.Quantity, request.CustomerId, ct);
+            var response = await _productService.GetDiscountedPrice(request.ProductId, request.Quantity, request.CustomerId, ct);
 
             // Return the discounted price
-            var response = new ProductDiscountResponse
-            {
-                ProductId = request.ProductId,
-                CustomerId = request.CustomerId,
-                Quantity = request.Quantity,
-                DiscountedTotalPrice = discountedTotalPrice
-            };
             return Ok(response);
         }
     }

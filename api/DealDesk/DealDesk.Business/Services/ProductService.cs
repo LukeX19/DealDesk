@@ -52,7 +52,7 @@ namespace DealDesk.Business.Services
             await _productRepository.Delete(productId, ct);
         }
 
-        public async Task<decimal> GetDiscountedPrice(long productId, int quantity, long customerId, CancellationToken ct = default)
+        public async Task<ProductDiscountResponse> GetDiscountedPrice(long productId, int quantity, long customerId, CancellationToken ct = default)
         {
             if (quantity <= 0)
             {
@@ -80,7 +80,17 @@ namespace DealDesk.Business.Services
             var totalPrice = product.StandardPrice * quantity;
 
             // Calculate the final discounted price
-            return discountStrategy.ApplyDiscount(totalPrice);
+            var finalPrice = discountStrategy.ApplyDiscount(totalPrice);
+
+            var response = new ProductDiscountResponse
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                CustomerId = customerId,
+                DiscountedTotalPrice = finalPrice
+            };
+
+            return response;
         }
     }
 }

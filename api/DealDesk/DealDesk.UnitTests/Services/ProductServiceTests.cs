@@ -111,91 +111,142 @@ namespace DealDesk.UnitTests.Services
         public async Task GetDiscountedPrice_NoDiscount_ReturnsTotalPrice()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
-            var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string>() };
+            var productId = 1;
             var quantity = 2;
+            var customerId = 1;
+            var product = new Product { Id = productId, Name = "Test Product", StandardPrice = 100M };
+            var customer = new Customer { Id = customerId, Name = "Test Customer", DiscountStrategies = new List<string>() };
             var expectedTotalPrice = product.StandardPrice * quantity;
+            var expectedResponse = new ProductDiscountResponse
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                CustomerId = customerId,
+                DiscountedTotalPrice = expectedTotalPrice
+            };
 
-            _productRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(product);
-            _customerRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _productRepositoryMock.Setup(repo => repo.GetById(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
+            _customerRepositoryMock.Setup(repo => repo.GetById(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
 
             // Act
-            var result = await _productService.GetDiscountedPrice(1, quantity, 1);
+            var result = await _productService.GetDiscountedPrice(productId, quantity, customerId);
 
             // Assert
-            Assert.AreEqual(expectedTotalPrice, result);
+            Assert.AreEqual(expectedResponse.ProductId, result.ProductId);
+            Assert.AreEqual(expectedResponse.CustomerId, result.CustomerId);
+            Assert.AreEqual(expectedResponse.Quantity, result.Quantity);
+            Assert.AreEqual(expectedResponse.DiscountedTotalPrice, result.DiscountedTotalPrice);
         }
 
         [TestMethod]
         public async Task GetDiscountedPrice_VolumeDiscount_AppliesDiscount()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
-            var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string> { "volume" } };
+            var productId = 1;
             var quantity = 10;
+            var customerId = 1;
+            var product = new Product { Id = productId, Name = "Test Product", StandardPrice = 100M };
+            var customer = new Customer { Id = customerId, Name = "Test Customer", DiscountStrategies = new List<string> { "volume" } };
             var expectedTotalPrice = product.StandardPrice * quantity * 0.9M; // Volume Strategy Discount value
+            var expectedResponse = new ProductDiscountResponse
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                CustomerId = customerId,
+                DiscountedTotalPrice = expectedTotalPrice
+            };
 
-            _productRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(product);
-            _customerRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _productRepositoryMock.Setup(repo => repo.GetById(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
+            _customerRepositoryMock.Setup(repo => repo.GetById(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
 
             // Act
-            var result = await _productService.GetDiscountedPrice(1, quantity, 1);
+            var result = await _productService.GetDiscountedPrice(productId, quantity, customerId);
 
             // Assert
-            Assert.AreEqual(expectedTotalPrice, result, delta: 0.01M);
+            Assert.AreEqual(expectedResponse.ProductId, result.ProductId);
+            Assert.AreEqual(expectedResponse.CustomerId, result.CustomerId);
+            Assert.AreEqual(expectedResponse.Quantity, result.Quantity);
+            Assert.AreEqual(expectedResponse.DiscountedTotalPrice, result.DiscountedTotalPrice);
         }
 
         [TestMethod]
         public async Task GetDiscountedPrice_SeasonalDiscount_AppliesDiscount()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
-            var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string> { "seasonal" } };
+            var productId = 1;
             var quantity = 5;
+            var customerId = 1;
+            var product = new Product { Id = productId, Name = "Test Product", StandardPrice = 100M };
+            var customer = new Customer { Id = customerId, Name = "Test Customer", DiscountStrategies = new List<string> { "seasonal" } };
             var expectedTotalPrice = product.StandardPrice * quantity * 0.85M; // Seasonal Strategy Discount value
+            var expectedResponse = new ProductDiscountResponse
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                CustomerId = customerId,
+                DiscountedTotalPrice = expectedTotalPrice
+            };
 
-            _productRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(product);
-            _customerRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _productRepositoryMock.Setup(repo => repo.GetById(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
+            _customerRepositoryMock.Setup(repo => repo.GetById(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
 
             // Act
-            var result = await _productService.GetDiscountedPrice(1, quantity, 1);
+            var result = await _productService.GetDiscountedPrice(productId, quantity, customerId);
 
             // Assert
-            Assert.AreEqual(expectedTotalPrice, result, delta: 0.01M);
+            Assert.AreEqual(expectedResponse.ProductId, result.ProductId);
+            Assert.AreEqual(expectedResponse.CustomerId, result.CustomerId);
+            Assert.AreEqual(expectedResponse.Quantity, result.Quantity);
+            Assert.AreEqual(expectedResponse.DiscountedTotalPrice, result.DiscountedTotalPrice);
         }
 
         [TestMethod]
         public async Task GetDiscountedPrice_VolumeAndSeasonalDiscount_AppliesBothDiscounts()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
-            var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string> { "volume", "seasonal" } };
+            var productId = 1;
             var quantity = 10;
+            var customerId = 1;
+            var product = new Product { Id = productId, Name = "Test Product", StandardPrice = 100M };
+            var customer = new Customer { Id = customerId, Name = "Test Customer", DiscountStrategies = new List<string> { "volume", "seasonal" } };
 
             var volumeDiscountedPrice = product.StandardPrice * quantity * 0.9M; // Volume Strategy Discount value
             var expectedTotalPrice = volumeDiscountedPrice * 0.85M; // Seasonal Strategy Discount value
+            var expectedResponse = new ProductDiscountResponse
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                CustomerId = customerId,
+                DiscountedTotalPrice = expectedTotalPrice
+            };
 
-            _productRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(product);
-            _customerRepositoryMock.Setup(repo => repo.GetById(1, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _productRepositoryMock.Setup(repo => repo.GetById(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
+            _customerRepositoryMock.Setup(repo => repo.GetById(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
 
             // Act
-            var result = await _productService.GetDiscountedPrice(1, quantity, 1);
+            var result = await _productService.GetDiscountedPrice(productId, quantity, customerId);
 
             // Assert
-            Assert.AreEqual(expectedTotalPrice, result, delta: 0.01M);
+            Assert.AreEqual(expectedResponse.ProductId, result.ProductId);
+            Assert.AreEqual(expectedResponse.CustomerId, result.CustomerId);
+            Assert.AreEqual(expectedResponse.Quantity, result.Quantity);
+            Assert.AreEqual(expectedResponse.DiscountedTotalPrice, result.DiscountedTotalPrice);
         }
 
         [TestMethod]
         public async Task GetDiscountedPrice_InvalidQuantity_ThrowsInvalidQuantityException()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Test Product", StandardPrice = 100M };
-            var customer = new Customer { Id = 1, Name = "Test Customer", DiscountStrategies = new List<string>() };
+            var productId = 1;
+            var quantity = 0;
+            var customerId = 1;
+            var product = new Product { Id = productId, Name = "Test Product", StandardPrice = 100M };
+            var customer = new Customer { Id = customerId, Name = "Test Customer", DiscountStrategies = new List<string>() };
 
             // Act & Assert
             await Assert.ThrowsExceptionAsync<InvalidQuantityException>(async () =>
             {
-                await _productService.GetDiscountedPrice(1, 0, 1);
+                await _productService.GetDiscountedPrice(productId, quantity, customerId);
             });
         }
     }

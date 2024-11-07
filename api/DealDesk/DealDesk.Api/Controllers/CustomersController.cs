@@ -19,8 +19,7 @@ namespace DealDesk.Api.Controllers
         public async Task<IActionResult> Create(CustomerRequest customerDto, CancellationToken ct = default)
         {
             var createdCustomerId = await _customerService.Create(customerDto, ct);
-            var createdCustomer = await _customerService.GetById(createdCustomerId, ct);
-            return CreatedAtAction(nameof(GetById), new { customerId = createdCustomerId }, createdCustomer);
+            return Created($"/api/products/{createdCustomerId}", createdCustomerId);
         }
 
         [HttpGet]
