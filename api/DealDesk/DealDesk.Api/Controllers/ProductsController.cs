@@ -55,16 +55,9 @@ namespace DealDesk.Api.Controllers
         public async Task<IActionResult> GetDiscountedPrice([FromQuery] ProductDiscountRequest request, CancellationToken ct = default)
         {
             // Calculate the discounted price using the ProductService
-            var discountedTotalPrice = await _productService.GetDiscountedPrice(request.ProductId, request.Quantity, request.CustomerId, ct);
+            var response = await _productService.GetDiscountedPrice(request.ProductId, request.Quantity, request.CustomerId, ct);
 
             // Return the discounted price
-            var response = new ProductDiscountResponse
-            {
-                ProductId = request.ProductId,
-                CustomerId = request.CustomerId,
-                Quantity = request.Quantity,
-                DiscountedTotalPrice = discountedTotalPrice
-            };
             return Ok(response);
         }
     }

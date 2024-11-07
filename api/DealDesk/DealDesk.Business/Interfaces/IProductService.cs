@@ -9,6 +9,6 @@ namespace DealDesk.Business.Interfaces
         Task<ProductResponse> GetById(long productId, CancellationToken ct = default);
         Task Update(long productId, ProductRequest updatedProductDto, CancellationToken ct = default);
         Task Delete(long productId, CancellationToken ct = default);
-        Task<decimal> GetDiscountedPrice(long productId, int quantity, long customerId, CancellationToken ct = default);
+        Task<ProductDiscountResponse> GetDiscountedPrice(long productId, int quantity, long customerId, CancellationToken ct = default);
     }
 }
