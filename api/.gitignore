@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ignore SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
