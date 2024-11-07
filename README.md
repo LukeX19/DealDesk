@@ -35,6 +35,8 @@
 
 The architecture of DealDesk follows a client-server model, where the frontend client communicates with the backend server through HTTP requests and responses in JSON format. The backend server is organized into three distinct layers: Presentation, Business Logic, and Data Access, ensuring a clear separation of concerns. The Presentation Layer handles incoming requests and prepares responses, the Business Logic Layer processes business rules and calculations (such as discount strategies), and the Data Access Layer manages interactions with the database. The application uses an SQLite database for data persistence, storing information about products, customers, and discount configurations.
 
+![App_Architecture](https://github.com/user-attachments/assets/b3fa7499-f80e-4091-bf01-3aff14e452e1)
+
 ## Getting Started
 
 ### Prerequisites
